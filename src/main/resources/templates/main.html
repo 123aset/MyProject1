@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Document</title>
+    <th:block th:include="fragments/template :: headerfiles"></th:block>
+</head>
+<body>
+<header th:include="fragments/template :: header"></header>
+<div class="container mt-5">
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <form action="/main" method="get" class="form-inline">
+                <input type="text" class="form-control" name="filter" th:value="${filter}" placeholder="Найти по тегу">
+                <button type="submit" class="btn btn-primary ml-2">Найти</button>
+            </form>
+        </div>
+    </div>
+
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+       aria-controls="collapseExample">Отправить сообщение[[${message}]]</a>
+    <div th:class="'collapse' + (${message != null} ? 'show' : '')" id="collapseExample">
+        <div class="form-group mt-3">
+            <form action="" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="text" name="text" th:class="'form-control' + ${textError != null ? ' is-invalid' : ''}"
+                           th:value="${message?.text != null ? message.text : ''}" placeholder="Введите текст сообщения">
+                    <div th:if="${textError != null}" th:text="${textError}" class="invalid-feedback">text Error</div>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="tag" th:value="${message?.tag != null ? message.tag : ''}" class="form-control" placeholder="Тэг">
+                </div>
+                <div class="form-group">
+                    <div class="custom-file">
+                        <input type="file" name="file" id="customFile">
+                        <label for="customFile" class="custom-file-label">Выбрать файл</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card-columns" th:if="${messages}">
+        <div class="card my-3" th:each="message: ${messages}">
+            <th:block th:if="${message.filename}">
+                <img th:src="@{'/img/' + ${message.filename}}" class="card-img-top">
+            </th:block>
+            <div class="m-2">
+                <span th:text="${message.text}"></span>
+                <i th:text="${message.tag}"></i>
+            </div>
+            <div class="card-footer text-muted">
+                <th:block th:text="${message.getAuthor().getUsername()}"></th:block>
+            </div>
+        </div>
+    </div>
+    <div th:if="${messages == null}">
+        No message
+    </div>
+    <br>
+</div>
+<footer th:include="fragments/template :: footer"></footer>
+<th:block th:include="fragments/template :: footerfiles"></th:block>
+</body>
+</html>

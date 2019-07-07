@@ -27,11 +27,6 @@ public class Users implements UserDetails {
     @NotBlank(message = "Поле 'Пароль' должно быть заполнено!")
     private String password;
 
-    //    @Size(min = 4,max = 10,message = "Field does not meet the requirement")
-    @Transient
-    @NotBlank(message = "Поле 'Подтверждение пароля' должно быть заполнено!")
-    private String password2;
-
     @Column(name = "active")
     private boolean active;
 
@@ -67,10 +62,9 @@ public class Users implements UserDetails {
         this.roles = roles;
     }
 
-    public Users(String username, String password, String password2, Set<Role> roles, String email, boolean active) {
+    public Users(String username, String password, Set<Role> roles, String email, boolean active) {
         this.username = username;
         this.password = password;
-        this.password2 = password2;
         this.roles = roles;
         this.email = email;
         this.active = active;
@@ -99,14 +93,6 @@ public class Users implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getPassword2() {
-        return password2;
-    }
-
-    public void setPassword2(String password2) {
-        this.password2 = password2;
     }
 
     public boolean isActive() {

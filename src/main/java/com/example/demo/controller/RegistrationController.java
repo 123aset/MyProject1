@@ -53,19 +53,16 @@ public class RegistrationController {
         }
         if (users.getPassword() != null && !users.getPassword().equals(passwordConfirm)) {
             model.addAttribute("passwordError", "Пароли совпадают!");
-            return "registration";
         }
         if (isConfirmEmpty || bindingResult.hasErrors() || !responseDto.isSuccess()) {
             Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
             model.mergeAttributes(errors);
-            return "registration";
         }
         if (!userService.addUser(users)) {
             model.addAttribute("usernameError", "User exists!");
-            return "registration";
         }
         model.addAttribute("message", "Активационный код выслан вам на email!");
-        return "redirect:/login";
+        return "registration";
     }
 
     @GetMapping("/activate/{code}")

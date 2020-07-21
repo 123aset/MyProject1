@@ -45,21 +45,26 @@ public class RegistrationController {
         CaptchaResponseDto responseDto = restTemplate.postForObject(url, Collections.emptyList(), CaptchaResponseDto.class);
 
         if (!responseDto.isSuccess()) {
-            model.addAttribute("captchaError","Введите капчу");
+            model.addAttribute("captchaError", "Введите капчу");
+            return "registration";
         }
         boolean isConfirmEmpty = StringUtils.isEmpty(passwordConfirm);
         if (isConfirmEmpty) {
             model.addAttribute("password2Error", "Поле 'Подтверждение пароля' должно быть заполнено!");
+            return "registration";
         }
         if (users.getPassword() != null && !users.getPassword().equals(passwordConfirm)) {
-            model.addAttribute("passwordError", "Пароли совпадают!");
+            model.addAttribute("passwordError", "Пароли не совпадают!");
+            return "registration";
         }
         if (isConfirmEmpty || bindingResult.hasErrors() || !responseDto.isSuccess()) {
             Map<String, String> errors = ControllerUtils.getErrors(bindingResult);
             model.mergeAttributes(errors);
+            return "registration";
         }
         if (!userService.addUser(users)) {
             model.addAttribute("usernameError", "User exists!");
+            return "registration";
         }
         model.addAttribute("message", "Активационный код выслан вам на email!");
         return "registration";

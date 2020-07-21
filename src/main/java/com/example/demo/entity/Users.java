@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
+import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
@@ -23,7 +23,7 @@ public class Users implements UserDetails {
     private String username;
 
     @Column(name = "password")
-//    @Size(min = 4,max = 10,message = "Field does not meet the requirement")
+    @Size(min = 4, message = "Field does not meet the requirement")
     @NotBlank(message = "Поле 'Пароль' должно быть заполнено!")
     private String password;
 
@@ -43,17 +43,8 @@ public class Users implements UserDetails {
     @Column(name = "activationCode")
     private String activationCode;
 
-//    @Column(name = "login", nullable = false, length = 50)
-//    @Size(min = 2,max = 10,message = "Field does not meet the requirement")
-//    private String login;
-//
-//    @Column(name = "email", nullable = false, length = 50)
-//    @Email(message = "Field does not meet the requirement")
-//    private String email;
-
     public Users() {
     }
-
 
     public Users(String username, String password, boolean active, Set<Role> roles) {
         this.username = username;

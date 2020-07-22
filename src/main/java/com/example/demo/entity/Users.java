@@ -36,12 +36,15 @@ public class Users implements UserDetails {
     private Set<Role> roles;
 
     @Column(name = "email")
-    @NotBlank(message = "Поле 'Email' должно быть заполнено!")
     @Email(message = "Некорректный email")
+    @NotBlank(message = "Поле 'Email' должно быть заполнено!")
     private String email;
 
     @Column(name = "activationCode")
     private String activationCode;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Message> messages;
 
     public Users() {
     }
@@ -118,6 +121,14 @@ public class Users implements UserDetails {
         this.activationCode = activationCode;
     }
 
+    public Set<Message> getMessages() {
+        return messages;
+    }
+
+    public void setMessages(Set<Message> messages) {
+        this.messages = messages;
+    }
+
     public boolean isAdmin() {
         return roles.contains(Role.ADMIN);
     }
@@ -169,7 +180,6 @@ public class Users implements UserDetails {
     public boolean isEnabled() {
         return isActive();
     }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

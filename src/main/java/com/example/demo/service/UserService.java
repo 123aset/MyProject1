@@ -4,6 +4,7 @@ import com.example.demo.entity.Role;
 import com.example.demo.entity.Users;
 import com.example.demo.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +23,8 @@ public class UserService implements UserDetailsService {
     private MailSender mailSender;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Value("${hostname}")
+    private String hostname;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -46,8 +49,9 @@ public class UserService implements UserDetailsService {
         if (!StringUtils.isEmpty(users.getEmail())) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Code: http://localhost:9000/activate/%s",
+                            "Code: http://%s/activate/%s",
                     users.getUsername(),
+                    hostname,
                     users.getActivationCode()
             );
 

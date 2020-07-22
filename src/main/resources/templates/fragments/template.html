@@ -25,12 +25,24 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" th:if="${#authorization.expression('isAuthenticated()')}">
                     <a class="nav-link" href="/main">Messages</a>
+                </li>
+                <li class="nav-item" th:if="${#authorization.expression('isAuthenticated()')}">
+                    <a class="nav-link" th:href="@{'/user-messages/' + ${#authentication.getPrincipal().getId()}}">My
+                        message</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasAuthority('ADMIN')">
+                    <a class="nav-link" href="/user">User list</a>
                 </li>
                 <li class="nav-item" th:if="${#authorization.expression('isAuthenticated()')}">
                     <a class="nav-link" href="/user/profile">Profile</a>
                 </li>
+                <!--                <sec:authorize access="${#authentication.getPrincipal().authorities}" var="isAdmin"></sec:authorize>-->
+                <!--                <div th:if="${strings.contains(#isAdmins,'ADMIN')}"></div>-->
+                <!--                <span th:text="${#authentication.getPrincipal().getUsername()}"></span>-->
+                <!--                <span th:text="${#authentication.getPrincipal().getId()}"></span>-->
+                <!--                <span th:text="${#authentication.getPrincipal().authorities}"></span>-->
             </ul>
         </div>
         <div th:if="${#authorization.expression('isAuthenticated()')}">
@@ -47,6 +59,62 @@
             </div>
         </div>
     </nav>
+</div>
+<div th:fragment="messageEdit">
+    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+       aria-controls="collapseExample">Отправить сообщение</a>
+    <div th:class="'collapse' + (${message != null} ? 'show' : '')" id="collapseExample">
+        <div class="form-group mt-3">
+            <form action="" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="text" name="text" th:class="'form-control' + ${textError != null ? ' is-invalid' : ''}"
+                           th:value="${message?.text != null ? message.text : ''}"
+                           placeholder="Введите текст сообщения">
+                    <div th:if="${textError != null}" th:text="${textError}" class="invalid-feedback">text Error</div>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="tag" th:value="${message?.tag != null ? message.tag : ''}"
+                           class="form-control"
+                           placeholder="Тэг">
+                </div>
+                <div class="form-group">
+                    <div class="custom-file">
+                        <input type="file" name="file" id="customFile">
+                        <label for="customFile" class="custom-file-label">Выбрать файл</label>
+                    </div>
+                </div>
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="hidden" th:name="id" th:value="${message != null ? message.id : ''}">
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="card-columns" th:fragment="messageList">
+    <div th:if="${messages}">
+        <div class="card my-3" th:each="message: ${messages}">
+            <th:block th:if="${message.filename}">
+                <img th:src="@{'/img/' + ${message.filename}}" class="card-img-top">
+            </th:block>
+            <div class="m-2">
+                <span th:text="${message.text}"></span><br>
+                <i th:text="'#' + ${message.tag}"></i>
+            </div>
+            <div class="card-footer text-muted">
+                <a th:href="'/user-messages/' + ${message.getAuthor().getId()}">
+                    <th:block th:text="${message.getAuthor().getUsername()}"></th:block>
+                </a>
+                <a class="btn btn-primary" th:if="${message.getAuthor().getId() == #authentication.getPrincipal().getId()}" th:href="'/user-messages/' + ${message.getAuthor().getId()} + '?message=' + ${message.getId()}">
+                    Edit
+                </a>
+            </div>
+        </div>
+    </div>
+    <div th:if="${messages == null}">
+        No message
+    </div>
 </div>
 <footer th:fragment="footer">
     <h1>Footer</h1>

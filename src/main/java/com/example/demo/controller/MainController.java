@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.entity.Message;
 import com.example.demo.entity.Users;
 import com.example.demo.repository.MessageRepository;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

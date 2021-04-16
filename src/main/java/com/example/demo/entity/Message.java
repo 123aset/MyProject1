@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.util.MessageHelper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,8 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "message")
@@ -33,4 +36,16 @@ public class Message {
     private Users author;
 
     private String filename;
+
+    @ManyToMany
+    @JoinTable(
+            name = "message_likes",
+            joinColumns = {@JoinColumn(name = "message_id")},
+            inverseJoinColumns = {@JoinColumn(name = "user_id")}
+    )
+    private Set<Users> likes = new HashSet<>();
+
+    public String getAuthorName() {
+        return MessageHelper.getAuthorName(author);
+    }
 }

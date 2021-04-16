@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <title>header</title>
 </head>
@@ -94,43 +95,46 @@
 </div>
 <th:block th:fragment="pager">
     <div class="container mt-3">
-        <ul class="pagination">
-            <li class="page-item disable">
-                <a class="page-link" href="#" tabindex="-1">Страницы</a>
-            </li>
-            <th:block th:each="i : ${#numbers.sequence(1, page.getTotalPages())}">
-                <th:block th:if="${(i - 1) == page.getNumber()}">
-                    <li class="page-item active">
-                        <a class="page-link" th:text="${i}" href="#" tabindex="-1"></a>
-                    </li>
+        <div class="row">
+            <ul class="pagination col justify-content-center">
+                <li class="page-item disable">
+                    <a class="page-link" href="#" tabindex="-1">Страницы</a>
+                </li>
+                <th:block th:each="i : ${#numbers.sequence(1, page.getTotalPages())}">
+                    <th:block th:if="${(i - 1) == page.getNumber()}">
+                        <li class="page-item active">
+                            <a class="page-link" th:text="${i}" href="#" tabindex="-1"></a>
+                        </li>
+                    </th:block>
+                    <th:block th:if="${(i - 1) != page.getNumber()}">
+                        <li class="page-item">
+                            <a class="page-link" th:text="${i}"
+                               th:href="${url} + @{'?page='} + ${i - 1} + @{'&size='} + ${page.getSize()}"
+                               tabindex="-1"></a>
+                        </li>
+                    </th:block>
                 </th:block>
-                <th:block th:if="${(i - 1) != page.getNumber()}">
-                    <li class="page-item">
-                        <a class="page-link" th:text="${i}"
-                           th:href="${url} + @{'?page='} + ${i - 1} + @{'&size='} + ${page.getSize()}"
-                           tabindex="-1"></a>
-                    </li>
+            </ul>
+            <ul class="pagination col justify-content-center">
+                <li class="page-item disable">
+                    <a class="page-link" href="#" tabindex="-1">Элементы на странице</a>
+                </li>
+                <th:block th:each="i : ${#numbers.sequence(5, 25, 5)}">
+                    <th:block th:if="${i == page.getSize()}">
+                        <li class="page-item active">
+                            <a class="page-link" th:text="${i}" href="#" tabindex="-1"></a>
+                        </li>
+                    </th:block>
+                    <th:block th:if="${i != page.getSize()}">
+                        <li class="page-item">
+                            <a class="page-link" th:text="${i}"
+                               th:href="${url} + @{'?page='} + ${page.getNumber()} + @{'&size='} + ${i}"
+                               tabindex="-1"></a>
+                        </li>
+                    </th:block>
                 </th:block>
-            </th:block>
-        </ul>
-        <ul class="pagination col justify-content">
-            <li class="page-item disable">
-                <a class="page-link" href="#" tabindex="-1">Элементы на странице</a>
-            </li>
-            <th:block th:each="i : ${#numbers.sequence(5, 25, 5)}">
-                <th:block th:if="${i == page.getSize()}">
-                    <li class="page-item active">
-                        <a class="page-link" th:text="${i}" href="#" tabindex="-1"></a>
-                    </li>
-                </th:block>
-                <th:block th:if="${i != page.getSize()}">
-                    <li class="page-item">
-                        <a class="page-link" th:text="${i}"
-                           th:href="${url} + @{'?page='} + ${page.getNumber()} + @{'&size='} + ${i}" tabindex="-1"></a>
-                    </li>
-                </th:block>
-            </th:block>
-        </ul>
+            </ul>
+        </div>
     </div>
 </th:block>
 <th:block th:fragment="messageList">
@@ -150,9 +154,10 @@
                         <a class="col align-self-center" th:href="'/user-messages/' + ${message.getAuthor().getId()}">
                             <th:block th:text="${message.getAuthor().getUsername()}"></th:block>
                         </a>
-                        <a href="#" class="col align-self-center">
-                            <i class="far fa-heart"></i>
-                            <i class="fas fa-heart"></i>
+                        <a th:href="@{'/messages/'} + ${message.id} + @{'/like'}" class="col align-self-center">
+                            <i class="fas fa-heart" th:if="${message.meLiked}"></i>
+                            <i class="far fa-heart" th:unless="${message.meLiked}"></i>
+                            <th:block th:text="${message.likes}"></th:block>
                         </a>
                         <a class="col btn btn-primary"
                            th:if="${message.getAuthor().getId() == #authentication.getPrincipal().getId()}"

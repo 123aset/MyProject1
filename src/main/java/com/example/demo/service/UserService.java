@@ -104,4 +104,14 @@ public class UserService implements UserDetailsService {
         if (isEmailChanged)
             sendMessage(users);
     }
+
+    public void subscribe(Users currentUser, Users users) {
+        users.getSubscribers().add(currentUser);
+        usersRepository.save(users);
+    }
+
+    public void unsubscribe(Users currentUser, Users users) {
+        users.getSubscribers().remove(currentUser);
+        usersRepository.save(users);
+    }
 }

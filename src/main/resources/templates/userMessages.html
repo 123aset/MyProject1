@@ -6,12 +6,40 @@
 </head>
 <body>
 <header th:include="fragments/template :: header"></header>
-<div class="container mt-5">
-    <div th:if="${message != null}">
-        <th:block th:include="fragments/template :: messageEdit"></th:block>
+<div class="container my-3">
+    <div class="row">
+        <div th:if="${!isCurrentUser}">
+            <a class="btn btn-info" th:if="${!isSubscribe}" th:href="@{'/user/subscribe/'} + ${userChannel.id}">Subscribe</a>
+            <a class="btn btn-info" th:if="${isSubscribe}" th:href="@{'/user/subscribe/'} + ${userChannel.id}">Unsubscribe</a>
+        </div>
+        <h3 th:text="${userChannel.username}"></h3>
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">Subscriptions</div>
+                    <h3 class="card-text">
+                        <a th:href="@{'/user/subscribers/'} + ${userChannel.id} + @{'/list'}"
+                           th:text="${subscriptionsCount}"></a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title">Subscribers</div>
+                    <h3 class="card-text">
+                        <a th:href="@{'/user/subscribers/'} + ${userChannel.id} + @{'/list'}"
+                           th:text="${subscribersCount}"></a>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <th:block th:if="${message != null}">
+            <th:block th:include="fragments/template :: messageEdit"></th:block>
+        </th:block>
+        <th:block th:include="fragments/template :: messageList"></th:block>
     </div>
-
-    <th:block th:include="fragments/template :: messageList"></th:block>
 </div>
 <footer th:include="fragments/template :: footer"></footer>
 <th:block th:include="fragments/template :: footerfiles"></th:block>

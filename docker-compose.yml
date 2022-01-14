@@ -18,5 +18,6 @@ services:
     image: 'postgres:13.1-alpine'
     container_name: db
     environment:
+      - POSTGRES_DB=test
       - POSTGRES_USER=aset
       - POSTGRES_PASSWORD=admin

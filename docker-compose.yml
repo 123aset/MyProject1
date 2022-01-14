@@ -19,4 +19,4 @@ services:
     container_name: db
     environment:
       - POSTGRES_USER=aset
-      - POSTGRES_PASSWORD=test
+      - POSTGRES_PASSWORD=adkmin
